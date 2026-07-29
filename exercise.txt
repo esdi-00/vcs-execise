@@ -1,0 +1,101 @@
+create table if not exists patient (
+patient_id int auto_increment primary key 
+, first_name varchar(50) not null
+, last_name varchar(50) not null
+, date_of_birth date not null
+, student_id varchar(20) not null unique
+, grade int check(grade between 1 and 12)
+, email varchar(100) unique
+, emergency_phone varchar(20) not null
+);
+
+create table if not exists staff ( 
+staff_id int auto_increment primary key 
+,first_name varchar(50) not null
+, last_name varchar(50) not null 
+, role varchar(30) not null
+, license_number varchar(30) unique 
+, phone varchar(20) not null 
+, email varchar(100) not null unique
+, hire_date date not null 
+);
+
+create table if not exists visit ( 
+visit_id int auto_increment primary key
+, patient_id int not null
+, staff_id int not null
+, visit_date datetime not null default current_timestamp
+, reason text not null
+, diagnosis text
+, follow_up_needed tinyint(1) default 0
+, height_cm decimal(5,2)
+, weight_kg decimal(5,2) 
+
+foreign key (patient_id) references patient(patient_id)
+foreign key (staff_id) references staff(staff_id)
+);
+
+create table if not exists medication (
+medication_id int auto_increment primary key
+, medication_name varchar(100) not null unique 
+, description text 
+, unit varchar(20) not null 
+, stock_quantity int not null default 0 check(stock_quantity >=0) 
+, reorder_level int not null default 10
+
+
+);
+
+create table if not exists prescription (
+prescription_id int auto_increment primary key
+, visit_id int not null
+, medication_id int not null
+, dosage varchar(50) not null
+, frequency varchar(50) not null
+, duration_days int not null check(duration_days >0) 
+, instructions text 
+
+foreign key (visit_id) references visit(visit_id)
+foreign key (medication_id) references medication(medication_id)
+);
+
+
+insert into patient 
+(patient_id, first_name, last_name, date_of_birth, student_id, grade,email, emergency_phone)
+values ('1','karl','puno','2003-02-08','CT22-0203','9','karlvincentpuno8@gmail.com','+639054226173');
+
+insert into patient 
+(first_name, last_name, date_of_birth, student_id, grade,email, emergency_phone)
+values ('teng','duguran','2006-03-12','CT20-0433','10','tengduguran@gmail.com','+639534343223');
+
+insert into patient 
+(first_name, last_name, date_of_birth, student_id, grade,email, emergency_phone)
+values ('kyle','puno','2005-03-12','CT21-0932','11','kylepuno@gmail.com','+639546436346');
+
+
+insert into staff
+(first_name,last_name,role,license_number,phone,email,hire_date)
+values ('james','lebron','doctor','1234-5678','+639609234953','doclebronjames@gmail.com','2026-07-18');
+
+insert into staff
+(first_name,last_name,role,license_number,phone,email,hire_date)
+values ('kobe','bryant','nurse','8765-4321','+639384238467','nursekobebryant@gmail.com','2026-07-22');
+
+insert into medications
+(medication_name,description,unit,stock_quantity,reorder_level)
+values ('ibuprofen','gamot sa sakit','400mg','32','100 tablets');
+
+insert into medication
+(medication_name,description,unit,stock_quantity,reorder_level)
+values ('amoxicillin','anti bacterial','500mg','63','150');
+
+insert into medication
+(medication_name,description,unit,stock_quantity,reorder_level)
+values ('cetirizine','anti allergy','10mg','99','200');
+
+insert into medication
+(medication_name,description,unit,stock_quantity,reorder_level)
+values ('paracetamol','anti lagnat','500mg','55','220');
+
+insert into visit 
+(
